@@ -128,6 +128,7 @@ static Key keys[] = {
 	{ MODKEY|ControlMask|ShiftMask, XK_j,      toggleverticalmax,   {0} },
 	{ MODKEY|ControlMask|ShiftMask, XK_k,      toggleverticalmax,   {0} },
 	{ MODKEY|ControlMask,           XK_m,      togglemaximize,      {0} },
+	{ MODKEY|ShiftMask,             XK_b,      toggleborders,  {0} },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)

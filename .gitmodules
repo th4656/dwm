@@ -1,0 +1,3 @@
+[submodule "dwm-patches"]
+	path = dwm-patches
+	url = https://github.com/th4656/dwm-patches
