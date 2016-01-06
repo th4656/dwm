@@ -28,10 +28,10 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 
 #define NUMCOLORS         6
 static const char colors[NUMCOLORS][MAXCOLORS][8] = {
-  // border   foreground background
-  { "#817cde", "#657b83", "#002b36" },  // normal
-  { "#00ccff", "#eee8d5", "#002b36" },  // selected
-  { "#dc322f", "#002b36", "#b58900" },  // urgent 
+  // border   foreground  background
+  { "#817cde", "#657b83", "#1b1b1b" },  // normal
+  { "#00ccff", "#eee8d5", "#7f62b3" },  // selected
+  { "#dc322f", "#002b36", "#b58900" },  // urgent
   { "#073642", "#839496", "#073642" },  // lightgrey on brightblack
   { "#073642", "#073642", "#002b36" },  // brightblack on black
   { "#073642", "#002b36", "#073642" },  // black on brightblack
@@ -46,21 +46,19 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     iscentered     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,             1,           -1 },
-	{ "Eclipse",  NULL,       NULL,       1 << 2,       0,             0,           -1 },
-	{ "Pidgin",   NULL,       NULL,       1 << 6,       0,             0,           -1 },
-	{ "Skype",    NULL,       NULL,       1 << 6,       0,             0,            1 },
-	{ "Thunderbird",  NULL,   NULL,       1 << 5,       0,             0,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 1,       0,             0,           -1 },
-	{ "mpv",      NULL,       NULL,       0,            1,             1,           -1 },
-	{ "Yad",      NULL,       NULL,       0,            0,             1,           -1 },
-	{ "VirtualBox", NULL,     NULL,       0,            0,             1,           -1 },
-	{ "feh",      NULL,       NULL,       0,            1,             1,           -1 },
-	{ "Gvim",     NULL,       NULL,       0,            1,             1,            1 },
-	{ "gvim",     NULL,       NULL,       0,            1,             1,            1 },
-	{ "imageviewer",NULL,     NULL,       0,            1,             1,            1 },
-	{ "qBittorent",NULL,      NULL,       1, 	        0,             0,            0 }
+	/* class        instance    title       tags mask     iscentered     isfloating   monitor */
+	{ "Gimp",       NULL,       NULL,       0,            1,             1,           -1 },
+	{ "Pidgin",     NULL,       NULL,       1 << 6,       0,             0,           -1 },
+	{ "Skype",      NULL,       NULL,       1 << 6,       0,             0,            1 },
+	{ "Thunderbird",NULL,       NULL,       1 << 5,       0,             0,           -1 },
+	{ "Firefox",    NULL,       NULL,       1 << 1,       0,             0,           -1 },
+	{ "mpv",        NULL,       NULL,       0,            1,             1,           -1 },
+	{ "VirtualBox", NULL,       NULL,       0,            0,             1,           -1 },
+	{ "feh",        NULL,       NULL,       0,            1,             1,           -1 },
+	{ "Gvim",       NULL,       NULL,       0,            1,             1,            1 },
+	{ "gvim",       NULL,       NULL,       0,            1,             1,            1 },
+	{ "imageviewer",NULL,       NULL,       0,            1,             1,            1 },
+	{ "qBittorrent",NULL,       NULL,       1, 	          0,             0,            0 }
 };
 
 /* layout(s) */
@@ -97,7 +95,7 @@ static const char *termcmd[]  = { "urxvt", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+	{ SUPER,                        XK_p,      spawn,          {.v = dmenucmd } },
 	// { MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ SUPER,                        XK_b,      togglebar,      {0} },
 	{ SUPER,                        XK_j,      focusstack,     {.i = +1 } },
@@ -109,26 +107,25 @@ static Key keys[] = {
 	{ SUPER|ShiftMask,              XK_h,      setsmfact,      {.f = +0.01} },
 	{ SUPER|ShiftMask,              XK_l,      setsmfact,      {.f = -0.01} },
 	{ MODKEY,                       XK_Return, zoom,           {0} },
-	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ SUPER|ShiftMask,              XK_w,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_g,      setlayout,      {.v = &layouts[3]} },
+	{ SUPER,                        XK_t,      setlayout,      {.v = &layouts[0]} },
+	{ SUPER,                        XK_f,      setlayout,      {.v = &layouts[1]} },
+	{ SUPER,                        XK_m,      setlayout,      {.v = &layouts[2]} },
+	{ SUPER,                        XK_g,      setlayout,      {.v = &layouts[3]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ SUPER|ShiftMask,              XK_space,  togglefloating, {0} },
-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	{ MODKEY|ControlMask|ShiftMask, XK_h,      togglehorizontalmax, {0} },
-	{ MODKEY|ControlMask|ShiftMask, XK_l,      togglehorizontalmax, {0} },
-	{ MODKEY|ControlMask|ShiftMask, XK_j,      toggleverticalmax,   {0} },
-	{ MODKEY|ControlMask|ShiftMask, XK_k,      toggleverticalmax,   {0} },
-	{ MODKEY|ControlMask,           XK_m,      togglemaximize,      {0} },
-	{ MODKEY|ShiftMask,             XK_b,      toggleborders,  {0} },
+	// { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
+	// { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
+	{ SUPER,                        XK_comma,  focusmon,       {.i = -1 } },
+	{ SUPER,                        XK_period, focusmon,       {.i = +1 } },
+	{ SUPER|ShiftMask,              XK_comma,  tagmon,         {.i = -1 } },
+	{ SUPER|ShiftMask,              XK_period, tagmon,         {.i = +1 } },
+	{ SUPER|ControlMask|ShiftMask,  XK_h,      togglehorizontalmax, {0} },
+	{ SUPER|ControlMask|ShiftMask,  XK_l,      togglehorizontalmax, {0} },
+	{ SUPER|ControlMask|ShiftMask,  XK_j,      toggleverticalmax,   {0} },
+	{ SUPER|ControlMask|ShiftMask,  XK_k,      toggleverticalmax,   {0} },
+	{ SUPER,                        XK_f,      togglemaximize,      {0} },
+	{ SUPER|ShiftMask,              XK_t,      toggleborders,  {0} },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
