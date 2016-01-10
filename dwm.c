@@ -94,7 +94,7 @@ struct Client {
 	int basew, baseh, incw, inch, maxw, maxh, minw, minh;
 	int bw, oldbw;
 	unsigned int tags;
-	int ismax, wasfloating, isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, iscentered, hasborders;
+	int ismax, wasfloating, isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, iscentered, hasfloatborders;
 	Client *next;
 	Client *snext;
 	Monitor *mon;
@@ -218,7 +218,7 @@ static void tagmon(const Arg *arg);
 static void tile(Monitor *);
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
-static void toggleborders(const Arg *arg);
+static void togglefloatborders(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
 static void unfocus(Client *c, int setfocus);
@@ -1832,11 +1832,6 @@ tile(Monitor *m)
 	else
 		mw = m->ww;
 	for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
-		/* if(!c->hasborders) */
-		/* { */
-		/* 	c->oldbw = c->bw; */
-		/* 	c->bw = 0; */
-		/* } */
 		if (i < m->nmaster) {
 			h = (m->wh - my) / (MIN(n, m->nmaster) - i);
 			if(n == 1)
@@ -1882,31 +1877,28 @@ togglefloating(const Arg *arg)
 	if (selmon->sel->isfullscreen) /* no support for fullscreen windows */
 		return;
 	selmon->sel->isfloating = !selmon->sel->isfloating || selmon->sel->isfixed;
-	if (selmon->sel->isfloating)
+	if (selmon->sel->isfloating) {
+		selmon->sel->hasfloatborders = 1;
 		resize(selmon->sel, selmon->sel->x, selmon->sel->y,
 		       selmon->sel->w, selmon->sel->h, 0);
+	}
 	arrange(selmon);
 }
 
 void
-toggleborders(const Arg *arg)
+togglefloatborders(const Arg *arg)
 {
 	Client *c = selmon->sel;
 
-	if (!selmon->sel)
+	if (!c || !c->isfloating)
 		return;
-	if (selmon->sel->isfullscreen) /* fullscreen windows shouldn't have borders */
-		return;
-	selmon->sel->hasborders = !selmon->sel->hasborders;
-	if(selmon->sel->hasborders)
-	{
-		selmon->sel->bw = selmon->sel->oldbw;
-		selmon->sel->oldbw = 0;
-	}
-	else
-	{
-		selmon->sel->oldbw = selmon->sel->bw;
-		selmon->sel->bw = 0;
+	c->hasfloatborders = !c->hasfloatborders;
+	if(c->hasfloatborders) {
+		c->oldbw = c->bw;
+		c->bw = borderpx;
+	} else {
+		c->oldbw = c->bw;
+		c->bw = 0;
 	}
 	resizeclient(c, c->x, c->y, c->w, c->h);
 }
