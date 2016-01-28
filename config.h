@@ -124,7 +124,7 @@ static Key keys[] = {
 	{ SUPER|ControlMask|ShiftMask,  XK_l,      togglehorizontalmax, {0} },
 	{ SUPER|ControlMask|ShiftMask,  XK_j,      toggleverticalmax,   {0} },
 	{ SUPER|ControlMask|ShiftMask,  XK_k,      toggleverticalmax,   {0} },
-	{ SUPER,                        XK_f,      togglemaximize,      {0} },
+	{ SUPER|ShiftMask,              XK_f,      togglemaximize,      {0} },
 	{ SUPER|ShiftMask,              XK_t,      togglefloatborders,  {0} },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
