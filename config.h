@@ -3,6 +3,11 @@
 #include "maximize.c" // Really shitty hack for borderpx
 #pragma once
 
+//TODO: global var for togglability of swallowing
+//canswallow=1 to look at rules
+//canswallow=0 ignores rules and disables swallowing
+//this is toggled by keybinding
+
 /* appearance */
 static const char *fonts[] = {
 	"Source Code Pro for Powerline:Semibold:size=11:antialias=true:hinting=true",
@@ -46,19 +51,18 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class        instance    title       tags mask     iscentered     isfloating   monitor */
-	{ "Gimp",       NULL,       NULL,       0,            1,             1,           -1 },
-	{ "Pidgin",     NULL,       NULL,       1 << 6,       0,             0,           -1 },
-	{ "Skype",      NULL,       NULL,       1 << 6,       0,             0,            1 },
-	{ "Thunderbird",NULL,       NULL,       1 << 5,       0,             0,           -1 },
-	{ "Firefox",    NULL,       NULL,       1 << 1,       0,             0,           -1 },
-	{ "mpv",        NULL,       NULL,       0,            1,             1,           -1 },
-	{ "VirtualBox", NULL,       NULL,       0,            0,             1,           -1 },
-	{ "feh",        NULL,       NULL,       0,            1,             1,           -1 },
-	{ "Gvim",       NULL,       NULL,       0,            1,             1,            1 },
-	{ "gvim",       NULL,       NULL,       0,            1,             1,            1 },
-	{ "imageviewer",NULL,       NULL,       0,            1,             1,            1 },
-	{ "qBittorrent",NULL,       NULL,       1, 	          0,             0,            0 }
+	/* class        instance    title       tags mask iscentered isfloating isterminal noswallow   monitor */
+	{ "Gimp",       NULL,       NULL,       0,        1,         1,         0,         1,        -1 },
+	{ "Pidgin",     NULL,       NULL,       1 << 6,   0,         0,         0,         0,        -1 },
+	{ "Skype",      NULL,       NULL,       1 << 6,   0,         0,         0,         0,         1 },
+	{ "Thunderbird",NULL,       NULL,       1 << 5,   0,         0,         0,         0,        -1 },
+	{ "Firefox",    NULL,       NULL,       1 << 1,   0,         0,         0,         1,        -1 },
+	{ "mpv",        NULL,       NULL,       0,        1,         1,         0,         1,        -1 },
+	{ "VirtualBox", NULL,       NULL,       0,        0,         1,         0,         0,        -1 },
+	{ "feh",        NULL,       NULL,       0,        1,         1,         0,         1,        -1 },
+	{ "imageviewer",NULL,       NULL,       0,        1,         1,         0,         1,         1 },
+	{ "qBittorrent",NULL,       NULL,       1,        0,         0,         0,         0,         0 },
+	{ "URxvt",     "urxvt",     NULL,       0,        0,         0,         1,         1,         0 }
 };
 
 /* layout(s) */
@@ -126,6 +130,7 @@ static Key keys[] = {
 	{ SUPER|ControlMask|ShiftMask,  XK_k,      toggleverticalmax,   {0} },
 	{ SUPER|ShiftMask,              XK_f,      togglemaximize,      {0} },
 	{ SUPER|ShiftMask,              XK_t,      togglefloatborders,  {0} },
+	{ SUPER|ShiftMask,              XK_s,      togglesticky,        {0} },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
