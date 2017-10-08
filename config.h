@@ -1,5 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "gaplessgrid.c"
+#include "exresize.c"
 #include "maximize.c" // Really shitty hack for borderpx
 #pragma once
 
@@ -133,6 +134,30 @@ static Key keys[] = {
 	{ SUPER|ShiftMask,              XK_f,      togglemaximize,      {0} },
 	{ SUPER|ShiftMask,              XK_t,      togglefloatborders,  {0} },
 	{ SUPER|ShiftMask,              XK_s,      togglesticky,        {0} },
+	{ SUPER|ControlMask,            XK_7,      explace,                {.ui = EX_NW }},
+	{ SUPER|ControlMask,            XK_8,      explace,                {.ui = EX_N  }},
+	{ SUPER|ControlMask,            XK_9,      explace,                {.ui = EX_NE }},
+	{ SUPER|ControlMask,            XK_4,      explace,                {.ui = EX_W  }},
+	{ SUPER|ControlMask,            XK_5,      explace,                {.ui = EX_C  }},
+	{ SUPER|ControlMask,            XK_6,      explace,                {.ui = EX_E  }},
+	{ SUPER|ControlMask,            XK_1,      explace,                {.ui = EX_SW }},
+	{ SUPER|ControlMask,            XK_2,      explace,                {.ui = EX_S  }},
+	{ SUPER|ControlMask,            XK_3,      explace,                {.ui = EX_SE }},
+	{ SUPER|MODKEY,                 XK_7,      exresize,               {.v = (int []){   0,  25 }}},
+	{ SUPER|MODKEY,                 XK_2,      exresize,               {.v = (int []){   0, -25 }}},
+	{ SUPER|MODKEY,                 XK_6,      exresize,               {.v = (int []){  25,   0 }}},
+	{ SUPER|MODKEY,                 XK_4,      exresize,               {.v = (int []){ -25,   0 }}},
+	{ SUPER|MODKEY,                 XK_5,      exresize,               {.v = (int []){  25,  25 }}},
+	{ SUPER|MODKEY,                 XK_5,      exresize,               {.v = (int []){ -25, -25 }}},
+	// { MODKEY|ControlMask,           XK_KP_6,   togglehorizontalexpand, {.i = +1} },
+	// { MODKEY|ControlMask,           XK_KP_3,   togglehorizontalexpand, {.i =  0} },
+	// { MODKEY|ControlMask,           XK_KP_4,   togglehorizontalexpand, {.i = -1} },
+	// { MODKEY|ControlMask,           XK_KP_8,   toggleverticalexpand,   {.i = +1} },
+	// { MODKEY|ControlMask,           XK_KP_1,   toggleverticalexpand,   {.i =  0} },
+	// { MODKEY|ControlMask,           XK_KP_2,   toggleverticalexpand,   {.i = -1} },
+	// { MODKEY|ControlMask,           XK_KP_9,   togglemaximize,         {.i = -1} },
+	// { MODKEY|ControlMask,           XK_KP_7,   togglemaximize,         {.i = +1} },
+	// { MODKEY|ControlMask,           XK_KP_5,   togglemaximize,         {.i =  0} },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)

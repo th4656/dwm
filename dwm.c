@@ -96,10 +96,13 @@ struct Client {
 	char name[256];
 	float mina, maxa;
 	int x, y, w, h;
+	int sfx, sfy, sfw, sfh; /* stored float geometry, used on mode revert */
 	int oldx, oldy, oldw, oldh;
 	int basew, baseh, incw, inch, maxw, maxh, minw, minh;
 	int bw, oldbw;
 	unsigned int tags;
+	unsigned char expandmask;
+	int expandx1, expandy1, expandx2, expandy2;
 	int ismax, wasfloating, isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
 	int iscentered, hasfloatborders, isterminal, noswallow, issticky;
 	pid_t pid;
@@ -1365,9 +1368,14 @@ manage(Window w, XWindowAttributes *wa)
 	updatewindowtype(c);
 	updatesizehints(c);
 	updatewmhints(c);
+	c->sfx = c->x;
+	c->sfy = c->y;
+	c->sfw = c->w;
+	c->sfh = c->h;
 	XSelectInput(dpy, w, EnterWindowMask|FocusChangeMask|PropertyChangeMask|StructureNotifyMask);
 	grabbuttons(c, 0);
 	c->wasfloating = 0;
+	c->expandmask = 0;
 	c->ismax = 0;
 	if (!c->isfloating)
 		c->isfloating = c->oldstate = trans != None || c->isfixed;
@@ -1491,8 +1499,9 @@ movemouse(const Arg *arg)
 				cropresize(c);
 				continue;
 			}
-			if (nx >= selmon->wx && nx <= selmon->wx + selmon->ww
-			&& ny >= selmon->wy && ny <= selmon->wy + selmon->wh) {
+			if ((m = recttomon(nx, ny, c->w, c->h))) {
+				if (m != selmon) 
+					sendmon(c, m);
 				if (abs(selmon->wx - nx) < snap)
 					nx = selmon->wx;
 				else if (abs((selmon->wx + selmon->ww) - (nx + WIDTH(c))) < snap)
@@ -1610,6 +1619,7 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	c->oldy = c->y; c->y = wc.y = y;
 	c->oldw = c->w; c->w = wc.width = w;
 	c->oldh = c->h; c->h = wc.height = h;
+	c->expandmask = 0;
 	wc.border_width = c->bw;
 	XConfigureWindow(dpy, c->win, CWX|CWY|CWWidth|CWHeight|CWBorderWidth, &wc);
 	configure(c);
@@ -1659,9 +1669,9 @@ resizemouse(const Arg *arg)
 				nw = MIN(nw, c->crop->w + c->crop->x);
 				nh = MIN(nh, c->crop->h + c->crop->y);
 			}
-			if (c->mon->wx + nw >= selmon->wx && c->mon->wx + nw <= selmon->wx + selmon->ww
-			&& c->mon->wy + nh >= selmon->wy && c->mon->wy + nh <= selmon->wy + selmon->wh)
-			{
+			if ((m = recttomon(c->x, c->y, nw, nh))) {
+				if (m != selmon) 
+					sendmon(c, m);
 				if (!c->isfloating && selmon->lt[selmon->sellt]->arrange
 				&& (abs(nw - c->w) > snap || abs(nh - c->h) > snap))
 					togglefloating(NULL);
@@ -1747,6 +1757,7 @@ scan(void)
 void
 sendmon(Client *c, Monitor *m)
 {
+	Monitor *oldm = selmon;
 	if (c->mon == m)
 		return;
 	unfocus(c, 1);
@@ -1756,8 +1767,11 @@ sendmon(Client *c, Monitor *m)
 	c->tags = m->tagset[m->seltags]; /* assign tags of target monitor */
 	attach(c);
 	attachstack(c);
-	focus(NULL);
-	arrange(NULL);
+	if (oldm != m)
+		arrange(oldm);
+	arrange(m);
+	focus(c);
+	restack(m);
 }
 
 void
@@ -1846,6 +1860,15 @@ setlayout(const Arg *arg)
 	if (!arg || !arg->v || arg->v != selmon->lt[selmon->sellt]) {
 		selmon->pertag->sellts[selmon->pertag->curtag] ^= 1;
 		selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag];
+		if (!selmon->lt[selmon->sellt]->arrange) {
+			for (Client *c = selmon->clients ; c ; c = c->next) {
+				if(!c->isfloating) {
+					/*restore last known float dimensions*/
+					resize(c, selmon->mx + c->sfx, selmon->my + c->sfy,
+					       c->sfw, c->sfh, False);
+				}
+			}
+		}
 	}
 	if (arg && arg->v)
 		selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt] = (Layout *)arg->v;
@@ -2067,10 +2090,19 @@ togglefloating(const Arg *arg)
 	if (!selmon->sel->isfloating && selmon->sel->crop)
 		cropdelete(selmon->sel);
 	selmon->sel->isfloating = !selmon->sel->isfloating || selmon->sel->isfixed;
-	if (selmon->sel->isfloating) {
+	if(selmon->sel->isfloating) {
 		selmon->sel->hasfloatborders = 1;
-		resize(selmon->sel, selmon->sel->x, selmon->sel->y,
-		       selmon->sel->w, selmon->sel->h, 0);
+		/*restore last known float dimensions*/
+		resize(selmon->sel, selmon->mx + selmon->sel->sfx, selmon->my + selmon->sel->sfy,
+		       selmon->sel->sfw, selmon->sel->sfh, 0);
+	} else {
+		if (selmon->sel->isfullscreen)
+			setfullscreen(selmon->sel, False);
+		/*save last known float dimensions*/
+		selmon->sel->sfx = selmon->sel->x - selmon->mx;
+		selmon->sel->sfy = selmon->sel->y - selmon->my;
+		selmon->sel->sfw = selmon->sel->w;
+		selmon->sel->sfh = selmon->sel->h;
 	}
 	arrange(selmon);
 }
