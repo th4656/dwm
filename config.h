@@ -25,11 +25,11 @@ static const char selbgcolor[]      = "#005577";
 static const char selfgcolor[]      = "#eeeeee";
 static const char floatnormbordercolor[] = "#005577";
 static const char floatselbordercolor[]  = "#005577";
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int borderpx  = 3;        /* border pixel of windows */
 static const unsigned int snap      = 5;       /* snap pixel */
 static const unsigned int minwsz    = 20;       /* Minimal heigt of a client for smfact */
 static const int showbar            = 1;        /* 0 means no bar */
-static const int topbar             = 1;        /* 0 means bottom bar */
+static const int topbar             = 0;        /* 0 means bottom bar */
 
 #define NUMCOLORS         6
 static const char colors[NUMCOLORS][MAXCOLORS][8] = {
@@ -53,6 +53,8 @@ static const Rule rules[] = {
 	 */
 	/* class        instance    title       tags mask iscentered isfloating isterminal noswallow   monitor */
 	{ "Gimp",       NULL,       NULL,       0,        1,         1,         0,         1,        -1 },
+	{ "krita",      NULL,       NULL,       0,        1,         1,         0,         1,        -1 },
+	{ "Shadowverse.exe",NULL,   NULL,       0,        1,         1,         0,         1         -1 },
 	{ "Pidgin",     NULL,       NULL,       1 << 6,   0,         0,         0,         0,        -1 },
 	{ "Skype",      NULL,       NULL,       1 << 6,   0,         0,         0,         0,         1 },
 	{ "Thunderbird",NULL,       NULL,       1 << 5,   0,         0,         0,         0,        -1 },
@@ -60,6 +62,7 @@ static const Rule rules[] = {
 	{ "mpv",        NULL,       NULL,       0,        1,         1,         0,         1,        -1 },
 	{ "VirtualBox", NULL,       NULL,       0,        0,         1,         0,         0,        -1 },
 	{ "feh",        NULL,       NULL,       0,        1,         1,         0,         1,        -1 },
+	{ "Yad",        NULL,       NULL,       0,        1,         1,         0,         1,        -1 },
 	{ "imageviewer",NULL,       NULL,       0,        1,         1,         0,         1,         1 },
 	{ "qBittorrent",NULL,       NULL,       1,        0,         0,         0,         0,         0 },
 	{ "URxvt",     "urxvt",     NULL,       0,        0,         0,         1,         1,         0 }
