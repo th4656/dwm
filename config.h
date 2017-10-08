@@ -53,7 +53,6 @@ static const Rule rules[] = {
 	 */
 	/* class        instance    title       tags mask iscentered isfloating isterminal noswallow   monitor */
 	{ "Gimp",       NULL,       NULL,       0,        1,         1,         0,         1,        -1 },
-	{ "krita",      NULL,       NULL,       0,        1,         1,         0,         1,        -1 },
 	{ "Shadowverse.exe",NULL,   NULL,       0,        1,         1,         0,         1         -1 },
 	{ "Pidgin",     NULL,       NULL,       1 << 6,   0,         0,         0,         0,        -1 },
 	{ "Skype",      NULL,       NULL,       1 << 6,   0,         0,         0,         0,         1 },
